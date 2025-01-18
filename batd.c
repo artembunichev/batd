@@ -1,5 +1,8 @@
 /*
-	batd -- a battery daemon.
+	batd -- a battery daemon for X11.
+
+	It reports when battery is low (see config.h) by the
+	means of popping an X(7) powered window up on the screen.
 */
 
 
@@ -344,7 +347,7 @@ int main() {
 	
 	/*
 		here we will but a messages that says that we're low
-		or high on battery and then pass it to our pop-up window.
+		on battery and then pass it to our pop-up window.
 	*/
 	char* msg;
 	/* the main program loop. */
@@ -374,14 +377,6 @@ int main() {
 		/*
 			Complain about low battery only if we're *not*
 			already charging.
-		*/
-		if (batinf->cap <= BATLOW &&
- 		 batinf->state != ACPI_BATT_STAT_CHARGING) {
-			msg = LOWMSG;
-		}
-		/*
-			Complain about high battery only if we *are*
-			still charging.
 			
 			Note: according to comment notes for battery status macros
 			in /usr/src/sys/dev/acpica/acpiio.h, status `0' does not
@@ -389,14 +384,13 @@ int main() {
 			does not have a macro. As I figured, it has somewhat-similar
 			meaning with `charging' status, so here we count it too.
 		*/
-		else if (batinf->cap >= BATHIGH &&
- 		 (batinf->state == ACPI_BATT_STAT_CHARGING ||
- 		 !batinf->state)) {
-			msg = HIGHMSG;
+		if (batinf->cap <= BATLOW &&
+ 		 batinf->state != ACPI_BATT_STAT_CHARGING) {
+			msg = LOWMSG;
 		}
 		
 		/*
-			so, we neither low nor high on battery,
+			so, we are not low on battery,
 			so sleep for a while and then check again.
 		*/
 		if (!msg) {
@@ -405,7 +399,7 @@ int main() {
 		}
 		
 		/*
-			But in case we are low or high, we want
+			But in case we are low, we want
 			to create a child process that will display
 			this message (make it visible).
 		*/

@@ -2,10 +2,6 @@
 #define BATLOW 20
 #define LOWMSG "Battery is low."
 
-/* high battery charge - notify we're high enoungh. */
-#define BATHIGH 88
-#define HIGHMSG "Battery is high enough."
-
 /* the interval (in seconds) the daemon checks the battery. */
 #define INTERVAL 45
 
